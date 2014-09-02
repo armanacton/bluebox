@@ -6,14 +6,14 @@ import tornado.process
 import tornado.template
 
 try:
-    import rpi.GPIO as GPIO
+    import RPi.GPIO as GPIO
 except ImportError:
     GPIO = None
 
 TRACKFILE='bluebox-tracks.json'
 
-BUTTON1 = 16
-BUTTON2 = 18
+BUTTON1 = 18
+BUTTON2 = 16
 
 process = None
 
@@ -21,8 +21,11 @@ cards = set()
 status = None
 
 def load_tracks():
-    with file(TRACKFILE) as f:
-        return json.load(f)
+    try:
+        with file(TRACKFILE) as f:
+            return json.load(f)
+    except:
+        return {}
 
 def save_tracks(tracks):
     with file(TRACKFILE, 'w') as f:
@@ -34,7 +37,8 @@ def get_track(id):
 
 def stop():
     print "STOP"
-    process.stdin.write('quit\n')
+    if process:
+        process.stdin.write('quit\n')
 
 def stopped(*args):
     global process, status
@@ -56,7 +60,7 @@ def play(id):
         if not track: return
         status = "Playing ", track
 
-        cmd = ['mplayer', '-really-quiet', '-slave']
+        cmd = ['mplayer', '-quiet', '-slave']
         if track.endswith('m3u'): cmd.append('-playlist')
         cmd.append(track)
 
@@ -65,11 +69,13 @@ def play(id):
 
 def pause():
     print "PAUSE"
-    process.stdin.write('pause\n')
+    if process:
+        process.stdin.write('pause\n')
 
 def ffwd():
     print "FAST-FORWARD"
-    process.stdin.write('pt_step 1\n')
+    if process:
+        process.stdin.write('pt_step 1\n')
 
 
 class EventHandler(tornado.web.RequestHandler):
@@ -122,11 +128,14 @@ def click(channel):
 
 if __name__ == "__main__":
     if GPIO:
+        print "Using GPIO"
         GPIO.setmode(GPIO.BOARD)
 
-        GPIO.setup(16, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(BUTTON1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(BUTTON2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-        GPIO.add_event_detect(16, GPIO.FALLING, callback=click, bouncetime=250)
+        GPIO.add_event_detect(BUTTON1, GPIO.FALLING, callback=click, bouncetime=250)
+        GPIO.add_event_detect(BUTTON2, GPIO.FALLING, callback=click, bouncetime=250)
     #GPIO.add_event_detect(16, GPIO.FALLING, callback=lambda channel: pause())
 
     application.listen(8888)
