@@ -5,8 +5,9 @@
   <body>
     <div class="container">
     <h1>{{status}}</h1>
+    {% if msg %} <div class="alert alert-info">{{msg}}</div>{% end %}
 
-    <h2>Cards</h2>
+    <h2>Cards <a class="btn btn-warning" href="/reset">reset</a></h2>
     <ul>
       {% for c in cards %}
         <li class="btn btn-default" onclick="document.getElementById('id').value='{{c}}'">{{c}}</li>

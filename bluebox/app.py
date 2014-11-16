@@ -66,6 +66,7 @@ def play(id):
 
         process = tornado.process.Subprocess(cmd, stdin=tornado.process.Subprocess.STREAM)
         process.set_exit_callback(stopped)
+        process.stdin.set_close_callback(stopped)
 
 def pause():
     print "PAUSE"
@@ -96,8 +97,14 @@ loader = tornado.template.Loader('bluebox/templates')
 class StatusHandler(tornado.web.RequestHandler):
     def get(self):
         t = loader.load('status.html')
-        self.write(t.generate(cards=cards, status=status))
+        self.write(t.generate(cards=cards, status=status, msg=self.get_argument('msg','')))
         loader.reset()
+
+class ResetHandler(tornado.web.RequestHandler):
+    def get(self):
+        cards.clear()
+        stop()
+        self.redirect('/?msg=reset')
 
 class AddHandler(tornado.web.RequestHandler):
     def get(self):
@@ -108,12 +115,14 @@ class AddHandler(tornado.web.RequestHandler):
         tracks[id] = path
         save_tracks(tracks)
 
-        self.write('ok')
+        self.redirect('/?msg=saved')
+
 
 
 application = tornado.web.Application([
     ("/", StatusHandler),
     ("/add", AddHandler),
+    ("/reset", ResetHandler),
     (r"/insert/(.*)", EventHandler),
     (r"/remove/(.*)", EventHandler),
 ], debug=True)
