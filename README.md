@@ -13,7 +13,8 @@ Requirements
 ------------
  * mplayer (it uses slave mode, so mpv is not ok)
  * Some NFC hardware supported by
-   [libnfc](http://nfc-tools.org/index.php?title=Libnfc)
+   [libnfc](http://nfc-tools.org/index.php?title=Libnfc) (I used a
+   [ACR122U](http://www.acs.com.hk/en/products/3/acr122u-usb-nfc-reader/))
  * [nfc-eventd](http://nfc-tools.org/index.php?title=Nfc-eventd)
 
 Buttons
