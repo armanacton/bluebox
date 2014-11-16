@@ -4,6 +4,8 @@
   </head>
   <body>
     <div class="container">
+    <h1 style="padding: 10px; width: auto; color:white; background: cornflowerblue;" class="page-heading">BlueBox</h1>
+
     <h1>{{status}}</h1>
     {% if msg %} <div class="alert alert-info">{{msg}}</div>{% end %}
 
@@ -17,16 +19,16 @@
     <h2>Add</h2>
     <form action='/add'>
       <div class="form-group">
-        <label>ID</label>
+        <label>card id</label>
         <input id="id" class="form-control" name='id' type='text'>
       </div>
       <div class="form-group">
-        <label>Path</label>
+        <label>mp3/m3u path</label>
         <input class="form-control"  name='path'>
       </div>
 
       <div class="form-group">
-        <button class="btn btn-primary" type='submit'>Submit</button>
+        <button class="btn btn-primary" type='submit'>Add</button>
       </div>
     </form>
     </div>
