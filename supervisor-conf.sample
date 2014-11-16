@@ -1,0 +1,8 @@
+[program:bluebox]
+command=/home/pi/bluebox/start
+process_name=%(program_name)s_%(process_num)01d
+redirect_stderr=true
+stdout_logfile=/var/log/supervisor/%(program_name)s.log
+killasgroup=true
+stopasgroup=true
+user=pi
